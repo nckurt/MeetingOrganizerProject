@@ -1,0 +1,124 @@
+﻿@model CustomModels.FormModel
+
+@{
+    ViewBag.title = "Yeni Toplantı Oluştur";
+
+}
+<head>
+    <title>@ViewBag.Title-Meeting Organizer</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <h4>@ViewBag.title</h4>
+        </div>
+        <br />
+        <form action="@Url.Action("Add", "Meeting")" method="post">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col-md-6">
+                        @Html.LabelFor(x => x.MeetingModel.Subject)
+                    </div>
+                    <div class="col-md-6" style="text-align:right;">
+                        @Html.TextBoxFor(x => x.MeetingModel.Subject, new { @class = "form-control", @required = "required" })
+                        @Html.ValidationMessageFor(x => x.MeetingModel.Subject)
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="col-md-6">
+                        @Html.LabelFor(x => x.MeetingModel.Date)
+                    </div>
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(x => x.MeetingModel.Date, "{0:dd.MM.yyyy}", new { @class = "form-control date-mask datepicker", @autocomplete = "off", @required = "required" })
+                        @Html.ValidationMessageFor(x => x.MeetingModel.Date)
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="col-md-6">
+                        @Html.LabelFor(x => x.MeetingModel.StartTime)
+                    </div>
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(x => x.MeetingModel.StartTime, "{0:HH:mm}", new { @class = "form-control", @required = "required" })
+                        @Html.ValidationMessageFor(x => x.MeetingModel.StartTime)
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="col-md-6">
+                        @Html.LabelFor(x => x.MeetingModel.EndTime)
+                    </div>
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(x => x.MeetingModel.EndTime, "{0:HH:mm}", new { @class = "form-control", @required = "required" })
+                        @Html.ValidationMessageFor(x => x.MeetingModel.EndTime)
+                    </div>
+                </div>               
+                <div class="col-md-12">
+                    <table id="participantInfo" class="table">
+                        <thead>
+                            <tr>
+                                <th>Katılımcılar</th>
+                                <th></th>
+                                <th><a id="addParticipant" class="btn btn-primary">Katılımcı Ekle</a></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-12">
+                    <div class="col-md-4"></div>
+                    <div class="col-md-4"></div>
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-primary btn-lg" style="margin:5px;">Oluştur</button>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</body>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="~/Assets/js/jquery.mask.min.js"></script>
+<script src="~/Assets/js/jquery.validate.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" integrity="sha512-mSYUmp1HYZDFaVKK//63EcZq4iFWFjxSL+Z3T/aCt4IO9Cejm03q3NKKYN6pFQzY0SBOr8h+eCIAZHPXcpZaNw==" crossorigin="anonymous" />
+<script src="/plugins/input-mask/jquery.inputmask.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.tr.min.js" integrity="sha512-fIZStvQgU9hAKeI9ovYv2kAv8oBsXHmxoea+RHi3684K1jriiTSvcjF+h0iRzkaZWC8NlmPGd4SIlCIx9uRdCw==" crossorigin="anonymous"></script>
+
+<script>
+    $(document).ready(function () {
+
+        $('.datepicker').datepicker({
+            format: 'dd.mm.yyyy',
+            autoclose: true,
+            endDate: 'd',
+            language: 'tr',
+            altFormat: 'yyyy-mm-dd'
+        })
+
+
+    });
+    var rowCount = $("#participantInfo tr").length - 1;
+    $(document.getElementById("addParticipant")).click(function () {
+        index = rowCount;
+        var str = "";
+        str += "<tr>";
+        str += "<td>";
+        str += '<input type="text" name="Participants[' + index + '].Email" class="form-control type="email" required />';
+        str += "</td>";
+        str += "<td>";
+        str += '<input type="button" name="Delete" value="Sil" class="btn btn-danger deleteBtn"/>';
+        str += "</td>";
+        str += "</tr>";
+        $("table tbody").append(str);
+        rowCount++;
+    });
+
+    $(document).on('click', '.deleteBtn', function () {
+        $(this).closest('tr').remove();
+        rowCount--;
+    });
+
+</script>
